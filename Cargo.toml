@@ -17,3 +17,8 @@ correctness = "deny"
 anyhow = "1.0.104"
 async-trait = "0.1.92"
 pingora = { version = "0.8.1", features = ["lb", "proxy", "openssl"] }
+serde = { version = "1.0.229", features = ["derive"] }
+serde_norway = "0.9.42"
+tracing = "0.1.44"
+tracing-appender = "0.2.5"
+tracing-subscriber = "0.3.23"
