@@ -48,6 +48,7 @@ fn daemon_logs_from_boot_through_shutdown() {
     std::fs::create_dir_all(&dir).expect("creating the test directory");
 
     let conf = dir.join("main.yaml");
+    let upstreams = dir.join("upstreams.yaml");
     let log = dir.join("janus.log");
     let pid_file = dir.join("janus.pid");
     let port = free_port();
@@ -62,14 +63,31 @@ fn daemon_logs_from_boot_through_shutdown() {
              grace_period_seconds: 0\n\
              graceful_shutdown_timeout_seconds: 1\n\
              proxy_address_http: 127.0.0.1:{port}\n\
+             upstreams_conf: {upstreams}\n\
              log_level: info\n\
              log_file: {log}\n",
             pid = pid_file.display(),
+            upstreams = upstreams.display(),
             sock = dir.join("upgrade.sock").display(),
             log = log.display(),
         ),
     )
     .expect("writing the test config");
+
+    std::fs::write(
+        &upstreams,
+        format!(
+            "provider: file\n\
+             upstreams:\n\
+             \x20 DEFAULT:\n\
+             \x20   paths:\n\
+             \x20     \"/\":\n\
+             \x20       servers:\n\
+             \x20         - \"127.0.0.1:{backend}\"\n",
+            backend = free_port(),
+        ),
+    )
+    .expect("writing the test upstreams config");
 
     let launch = Command::new(env!("CARGO_BIN_EXE_janus"))
         .args(["-c", conf.to_str().expect("utf-8 config path"), "-d"])

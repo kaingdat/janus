@@ -5,6 +5,7 @@ use std::path::Path;
 #[derive(Deserialize)]
 pub struct MainConfig {
     pub proxy_address_http: String,
+    pub upstreams_conf: String,
     #[serde(default = "default_log_level")]
     pub log_level: String,
     #[serde(default)]
@@ -66,14 +67,15 @@ mod tests {
     }
 
     #[test]
-    fn load_reads_and_parses_a_config_file() {
+    fn load_parses_config_file() {
         let path = write_temp(
             "parse",
-            "proxy_address_http: 0.0.0.0:7000\nlog_level: debug\n",
+            "proxy_address_http: 0.0.0.0:7000\nupstreams_conf: /etc/janus/upstreams.yaml\nlog_level: debug\n",
         );
 
         let cfg = MainConfig::load(&path).unwrap();
         assert_eq!(cfg.proxy_address_http, "0.0.0.0:7000");
+        assert_eq!(cfg.upstreams_conf, "/etc/janus/upstreams.yaml");
         assert_eq!(cfg.log_level, "debug");
 
         std::fs::remove_file(&path).ok();

@@ -18,6 +18,8 @@ upstream_keepalive_pool_size: 128
 # --- Janus application settings ----------------------------------------------
 # Address the plaintext HTTP proxy listens on.
 proxy_address_http: 0.0.0.0:6193
+# Path to upstreams config
+upstreams_conf: etc/upstreams.yaml
 # Max log level: info | warn | error | debug | trace | off
 log_level: info
 # Uncomment to write logs to a file instead of stdout.
